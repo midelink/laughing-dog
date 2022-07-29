@@ -1,0 +1,882 @@
+create database mide_coursework
+-------------------------------------------------------------------------------------------------
+----TASK 1
+------------------------------------------------------------------------------------------------
+---CREATING TABLES WITH CONSTRAINTS FIRST BEFORE INSERTION OF VALUES
+use mide_coursework
+
+--- TABLE CHILD IDENTIFICATION
+CREATE TABLE [dbo].[identification](
+	[childid] [nvarchar](15) NOT NULL,
+	[Roundid] [tinyint] NOT NULL,
+	[clustid] [tinyint] NULL,
+	[commid] [nvarchar](12) NULL,
+	[typesite] [tinyint] NULL,
+	[region] [tinyint] NULL,
+	[dint] [date] NULL,
+	[yc] [bit] NULL,
+	[chloc] [bit] NULL,
+	[inbound_hh] [bit] NULL,
+	[inround_ch] [bit] NULL,
+	[panel] [bit] NULL,
+	[deceased] [bit] NULL,
+ CONSTRAINT [PK_childid] PRIMARY KEY CLUSTERED 
+(
+	[childid] ASC,
+	[Roundid] ASC))
+GO
+
+---TABLE CHILD ANTHROPOMETRIC
+CREATE TABLE [dbo].[anthropometric](
+	[childid] [nvarchar](15) NOT NULL,
+	[Roundid] [tinyint] NOT NULL,
+	[chweight] [decimal](25, 20) NULL,
+	[chheight] [decimal](25, 20) NULL,
+	[bmi] [decimal](25, 20) NULL,
+	[zwfa] [decimal](25, 20) NULL,
+	[zhfa] [decimal](25, 20) NULL,
+	[zbfa] [decimal](25, 20) NULL,
+	[zwfl] [decimal](25, 20) NULL,
+	[fwfa] [tinyint] NULL,
+	[fhfa] [tinyint] NULL,
+	[fbfa] [tinyint] NULL,
+	[fwfl] [tinyint] NULL,
+	[underweight] [tinyint] NULL,
+	[stunting] [tinyint] NULL,
+	[thinness] [tinyint] NULL
+) ON [PRIMARY]
+GO
+
+
+ALTER TABLE [dbo].[anthropometric]  WITH CHECK ADD  CONSTRAINT 
+[childanthro] FOREIGN KEY([childid], [Roundid])
+REFERENCES [dbo].[identification] ([childid], [Roundid])
+GO
+ALTER TABLE [dbo].[anthropometric] CHECK CONSTRAINT [childanthro]
+GO
+
+--TABLE CHILD SPONSOR
+CREATE TABLE [dbo].[sponsor](
+	[childid] [nvarchar](15) NOT NULL,
+	[Roundid] [tinyint] NOT NULL,
+	[dadid] [tinyint] NULL,
+	[dadage] [smallint] NULL,
+	[dadalive] [tinyint] NULL,
+	[dadyrdied] [tinyint] NULL,
+	[dadcantread] [bit] NULL,
+	[dadedu] [tinyint] NULL,
+	[momid] [tinyint] NULL,
+	[momage] [smallint] NULL,
+	[momalive] [tinyint] NULL,
+	[momyrdied] [tinyint] NULL,
+	[momcantread] [bit] NULL,
+	[momedu] [tinyint] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[sponsor]  WITH CHECK ADD  CONSTRAINT 
+[childbio] FOREIGN KEY([childid], [Roundid])
+REFERENCES [dbo].[identification] ([childid], [Roundid])
+GO
+ALTER TABLE [dbo].[sponsor] CHECK CONSTRAINT [childbio]
+GO
+
+---TABLE CHILD BIRTH
+CREATE TABLE [dbo].[birth](
+	[childid] [nvarchar](15) NOT NULL,
+	[Roundid] [tinyint] NOT NULL,
+	[bwght] [int] NULL,
+	[bwdoc] [bit] NULL,
+	[numante] [tinyint] NULL,
+	[tetanus] [bit] NULL,
+	[delivery] [bit] NULL,
+	[bcg] [bit] NULL,
+	[measles] [bit] NULL,
+	[polio] [bit] NULL,
+	[dpt] [bit] NULL,
+	[hib] [bit] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[birth]  WITH CHECK ADD  CONSTRAINT 
+[childbirth] FOREIGN KEY([childid], [Roundid])
+REFERENCES [dbo].[identification] ([childid], [Roundid])
+GO
+ALTER TABLE [dbo].[birth] CHECK CONSTRAINT [childbirth]
+GO
+
+
+--- TABLE CHILD EDUCATION
+CREATE TABLE [dbo].[education](
+	[childid] [nvarchar](15) NOT NULL,
+	[Roundid] [tinyint] NOT NULL,
+	[preprim] [bit] NULL,
+	[agegr1] [smallint] NULL,
+	[enrol] [smallint] NULL,
+	[engrade] [smallint] NULL,
+	[entype] [smallint] NULL,
+	[hghgrade] [smallint] NULL,
+	[timesch] [smallint] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[education]  WITH CHECK ADD  CONSTRAINT 
+[childedu] FOREIGN KEY([childid], [Roundid])
+REFERENCES [dbo].[identification] ([childid], [Roundid])
+GO
+ALTER TABLE [dbo].[education] CHECK CONSTRAINT [childedu]
+GO
+
+
+--- TABLE CHILD GENERAL FEATURES
+CREATE TABLE [dbo].[general_features](
+	[childid] [nvarchar](15) NOT NULL,
+	[Roundid] [tinyint] NOT NULL,
+	[chsex] [tinyint] NULL,
+	[chlang] [tinyint] NULL,
+	[chethnic] [tinyint] NULL,
+	[chldrel] [tinyint] NULL,
+	[agemon] [smallint] NULL,
+	[marrcohab] [bit] NULL,
+	[marrcohab_age] [tinyint] NULL,
+	[birth] [bit] NULL,
+	[birth_age] [tinyint] NULL
+) ON [PRIMARY]
+GO
+
+
+ALTER TABLE [dbo].[general_features]  WITH CHECK ADD  CONSTRAINT 
+[childgen] FOREIGN KEY([childid], [Roundid])
+REFERENCES [dbo].[identification] ([childid], [Roundid])
+GO
+ALTER TABLE [dbo].[general_features] CHECK CONSTRAINT [childgen]
+GO
+
+
+-- TABLE CHILD READ WRITE
+CREATE TABLE [dbo].[read_write](
+	[childid] [nvarchar](15) NOT NULL,
+	[Roundid] [tinyint] NOT NULL,
+	[levlread] [tinyint] NULL,
+	[levlwrit] [tinyint] NULL,
+	[literate] [bit] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[read_write]  WITH CHECK ADD  CONSTRAINT 
+[childread] FOREIGN KEY([childid], [Roundid])
+REFERENCES [dbo].[identification] ([childid], [Roundid])
+GO
+ALTER TABLE [dbo].[read_write] CHECK CONSTRAINT [childread]
+GO
+
+
+-- TABLE CHILD SUBJECTIVE WELL BEING
+CREATE TABLE [dbo].[subjective_wellbeing](
+	[childid] [nvarchar](15) NOT NULL,
+	[Roundid] [tinyint] NOT NULL,
+	[chhrel] [tinyint] NULL,
+	[chhealth] [tinyint] NULL,
+	[cladder] [tinyint] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[subjective_wellbeing]  WITH CHECK ADD  CONSTRAINT [sub] 
+FOREIGN KEY([childid], [Roundid])
+REFERENCES [dbo].[identification] ([childid], [Roundid])
+GO
+ALTER TABLE [dbo].[subjective_wellbeing] CHECK CONSTRAINT [sub]
+GO
+
+
+-- TABLE CHILD TIME USE
+CREATE TABLE [dbo].[time_use](
+	[childid] [nvarchar](15) NOT NULL,
+	[Roundid] [tinyint] NOT NULL,
+	[hsleep] [int] NULL,
+	[hcare] [int] NULL,
+	[hchore] [int] NULL,
+	[htask] [int] NULL,
+	[hwork] [int] NULL,
+	[hschool] [int] NULL,
+	[hstudy] [int] NULL,
+	[hplay] [int] NULL,
+	[commwork] [int] NULL,
+	[commsch] [int] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[time_use]  WITH CHECK ADD  CONSTRAINT [time] FOREIGN KEY([childid], [Roundid])
+REFERENCES [dbo].[identification] ([childid], [Roundid])
+GO
+ALTER TABLE [dbo].[time_use] CHECK CONSTRAINT [time]
+GO
+
+-- TABLE CREDIT FOOD SECURITY
+CREATE TABLE [dbo].[food_security](
+	[childid] [nvarchar](15) NOT NULL,
+	[Roundid] [tinyint] NOT NULL,
+	[credit] [bit] NULL,
+	[foodsec] [tinyint] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[food_security]  WITH CHECK ADD  CONSTRAINT [credit] 
+FOREIGN KEY([childid], [Roundid])
+REFERENCES [dbo].[identification] ([childid], [Roundid])
+GO
+ALTER TABLE [dbo].[food_security] CHECK CONSTRAINT [credit]
+GO
+
+-- TABLE PROPERTY OWNERSHIP
+CREATE TABLE [dbo].[property_ownership](
+	[childid] [nvarchar](15) NOT NULL,
+	[Roundid] [tinyint] NOT NULL,
+	[ownlandhse] [bit] NULL,
+	[ownhouse] [bit] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[property_ownership]  WITH CHECK ADD  CONSTRAINT 
+[ppty] FOREIGN KEY([childid], [Roundid])
+REFERENCES [dbo].[identification] ([childid], [Roundid])
+GO
+ALTER TABLE [dbo].[property_ownership] CHECK CONSTRAINT [ppty]
+GO
+
+--TABLE WEALTH SUB INDICES
+CREATE TABLE [dbo].[wealth_sub_indices](
+	[childid] [nvarchar](15) NOT NULL,
+	[Roundid] [tinyint] NOT NULL,
+	[wi_new] [decimal](25, 20) NULL,
+	[hq_new] [decimal](25, 20) NULL,
+	[sv_new] [decimal](5, 3) NULL,
+	[cd_new] [decimal](4, 2) NULL,
+	[elecq_new] [bit] NULL,
+	[toiletq_new] [bit] NULL,
+	[drwaterq_new] [bit] NULL,
+	[cookingq_new] [bit] NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[wealth_sub_indices]  WITH CHECK ADD  CONSTRAINT 
+[subindices] 
+FOREIGN KEY([childid], [Roundid])
+REFERENCES [dbo].[identification] ([childid], [Roundid])
+GO
+ALTER TABLE [dbo].[wealth_sub_indices] CHECK CONSTRAINT 
+[subindices]
+GO
+
+---INSERTING MY VALUES INTO CREATED TABLES (India and Ethiopia)
+
+insert into dbo.identification([childid],[Roundid],
+[clustid],[commid],[typesite],[region],[dint],[yc],
+[chloc],[inround_ch],[panel], [deceased])
+select CAST(childid as nvarchar(15)), CAST(Round as tinyint),
+CAST([clustid] as tinyint), CAST([commid] as nvarchar(12)), 
+CAST([typesite] as tinyint), CAST([region] as tinyint), 
+CAST([dint] as date), CAST(yc as bit),
+CAST(childloc as bit), CAST([inround] as bit),
+CAST([panel] as bit), CAST([deceased] as bit) 
+FROM [dbo].[ethiopia_round]
+
+insert into dbo.identification([childid],[Roundid],
+[clustid],[commid],[typesite],[region],[dint],[yc],
+[chloc],[inround_ch],[panel],[deceased])
+select CAST(childid as nvarchar(15)), CAST(Round as tinyint),
+CAST([clustid] as tinyint), CAST([commid] as nvarchar(12)), 
+CAST([typesite] as tinyint), CAST([region] as tinyint), 
+CAST([dint] as date), CAST(yc as bit),
+CAST(childloc as bit), CAST([inround] as bit),
+CAST([panel12345] as bit), CAST([deceased] as bit) 
+FROM [dbo].[india_round]
+
+
+INSERT INTO dbo.anthropometric(childid,Roundid,chweight,chheight,bmi,zwfa,zhfa,
+zbfa,zwfl,fwfa,fhfa,fbfa,fwfl,underweight,stunting,thinness)
+SELECT CAST (childid as nvarchar(15)),CAST(Round as tinyint),CAST(chweight as smallint),
+CAST(chheight as decimal(25,20)),CAST(bmi as Decimal(25,20)),
+CAST(zwfa as Decimal(25,20)),CAST(zhfa as Decimal(25,20)),
+CAST(zbfa as Decimal(25,20)),CAST(zwfl as Decimal(25,20)),
+CAST(fwfa as tinyint),CAST(fhfa as tinyint),CAST(fbfa as tinyint),
+CAST(fwfl as tinyint),CAST(underweight as tinyint),
+CAST(stunting as tinyint),CAST(thinness as tinyint)
+FROM [dbo].[india_round]
+
+INSERT INTO dbo.anthropometric(childid,Roundid,chweight,chheight,bmi,zwfa,zhfa,
+zbfa,zwfl,fwfa,fhfa,fbfa,fwfl,underweight,stunting,thinness)
+SELECT CAST (childid as nvarchar(15)),CAST(Round as tinyint),CAST(chweight as smallint),
+CAST(chheight as decimal(25,20)),CAST(bmi as Decimal(25,20)),
+CAST(zwfa as Decimal(25,20)),CAST(zhfa as Decimal(25,20)),
+CAST(zbfa as Decimal(25,20)),CAST(zwfl as Decimal(25,20)),
+CAST(fwfa as tinyint),CAST(fhfa as tinyint),CAST(fbfa as tinyint),
+CAST(fwfl as tinyint),CAST(underweight as tinyint),
+CAST(stunting as tinyint),CAST(thinness as tinyint)
+FROM [dbo].[ethiopia_round]
+
+
+INSERT INTO dbo.birth(childid,Roundid,[bwght],[bwdoc],
+[tetanus],[delivery],[bcg],[measles],[polio],[dpt],[hib])
+SELECT CAST (childid as nvarchar(15)),CAST(Round as tinyint),CAST([bwght] as int),
+CAST([bwdoc] as bit),
+CAST([tetanus] as bit),CAST( [delivery] as bit),
+CAST([bcg] as bit),CAST( [measles] as bit),
+CAST([polio] as bit),CAST([dpt] as bit),
+CAST([hib] as bit)
+FROM [dbo].[ethiopia_round]
+
+
+
+INSERT INTO dbo.birth(childid,Roundid,[bwght],[bwdoc],
+[tetanus],[delivery],[bcg],[measles],[polio],[dpt],[hib])
+SELECT CAST (childid as nvarchar(15)),CAST(Round as tinyint),CAST([bwght] as int),
+CAST([bwdoc] as bit),
+CAST([tetanus] as bit),CAST( [delivery] as bit),
+CAST([bcg] as bit),CAST( [measles] as bit),
+CAST([polio] as bit),CAST([dpt] as bit),
+CAST([hib] as bit)
+FROM [dbo].[india_round]
+
+
+INSERT INTO dbo.education(
+childid,Roundid,preprim,agegr1,enrol,engrade,entype,hghgrade,timesch)
+SELECT CAST(childid as nvarchar(15)),CAST(round as tinyint),
+CAST(preprim as bit),CAST(agegr1 as smallint),
+CAST(enrol as smallint),CAST(engrade as smallint),
+CAST(entype as smallint),CAST(hghgrade as smallint),
+CAST(timesch as smallint) FROM dbo.ethiopia_round
+
+
+INSERT INTO dbo.education(
+childid,Roundid,preprim,agegr1,enrol,engrade,entype,hghgrade,timesch)
+SELECT CAST(childid as nvarchar(15)),CAST(round as tinyint),
+CAST(preprim as bit),CAST(agegr1 as smallint),
+CAST(enrol as smallint),CAST(engrade as smallint),
+CAST(entype as smallint),CAST(hghgrade as smallint),
+CAST(timesch as smallint) FROM dbo.[india_round]
+
+
+INSERT INTO dbo.general_features(childid,Roundid,chsex,chlang,chethnic,
+chldrel,agemon,marrcohab,marrcohab_age,birth,birth_age)
+SELECT CAST (childid as nvarchar(15)),CAST(Round as tinyint),CAST(chsex as tinyint),
+CAST(chlang as tinyint),CAST(chethnic as tinyint),
+CAST(chldrel as tinyint),CAST(agemon as smallint),
+CAST(marrcohab as bit),CAST(marrcohab_age as bit),
+CAST(birth as bit),CAST(birth_age as tinyint)
+FROM [dbo].[ethiopia_round]
+
+
+INSERT INTO dbo.general_features(childid,Roundid,chsex,chlang,chethnic,
+chldrel,agemon,marrcohab,marrcohab_age,birth,birth_age)
+SELECT CAST (childid as nvarchar(15)),CAST(Round as tinyint),CAST(chsex as tinyint),
+CAST(chlang as tinyint),CAST(chethnic as tinyint),
+CAST(chldrel as tinyint),CAST(agemon as smallint),
+CAST(marrcohab as bit),CAST(marrcohab_age as tinyint),
+CAST(birth as bit),CAST(birth_age as tinyint)
+FROM [dbo].[india_round]
+
+INSERT INTO dbo.read_write(
+childid,Roundid,levlread,levlwrit,literate)
+SELECT CAST(childid as nvarchar(15)), CAST(Round as tinyint), CAST(levlread as tinyint),
+CAST(levlwrit as tinyint),CAST(literate as bit)
+FROM dbo.ethiopia_round
+
+
+INSERT INTO dbo.read_write(
+childid,Roundid,levlread,levlwrit,literate)
+SELECT CAST(childid as nvarchar(15)), CAST(Round as tinyint), CAST(levlread as tinyint),
+CAST(levlwrit as tinyint),CAST(literate as bit)
+FROM dbo.[india_round]
+
+
+INSERT INTO dbo.subjective_wellbeing(
+childid,Roundid,chhrel,chhealth,cladder)
+SELECT CAST(childid as nvarchar(15)),CAST(Round as tinyint) ,CAST(chhrel as tinyint),
+CAST(chhealth as tinyint),CAST(cladder as tinyint)
+FROM dbo.ethiopia_round
+
+INSERT INTO dbo.subjective_wellbeing(
+childid,Roundid,chhrel,chhealth,cladder)
+SELECT CAST(childid as nvarchar(15)),CAST(Round as tinyint) ,CAST(chhrel as tinyint),
+CAST(chhealth as tinyint),CAST(cladder as tinyint)
+FROM dbo.[india_round]
+
+
+INSERT INTO dbo.time_use(
+childid,Roundid,hsleep,hcare,hchore,htask,hwork,
+hschool,hstudy,hplay,commwork,commsch)
+SELECT CAST(childid as nvarchar(15)),CAST(Round as tinyint),
+CAST(hsleep as int),CAST(hcare as int),
+CAST(hchore as int),CAST(htask as int),
+CAST(hwork as int),CAST(hschool as int),
+CAST(hstudy as int),CAST(hplay as int),
+CAST(commwork as int), CAST(commsch as int)
+FROM dbo.ethiopia_round
+
+
+INSERT INTO dbo.time_use(
+childid,Roundid,hsleep,hcare,hchore,htask,hwork,
+hschool,hstudy,hplay,commwork,commsch)
+SELECT CAST(childid as nvarchar(15)),CAST(Round as tinyint),
+CAST(hsleep as int),CAST(hcare as int),
+CAST(hchore as int),CAST(htask as int),
+CAST(hwork as int),CAST(hschool as int),
+CAST(hstudy as int),CAST(hplay as int),
+CAST(commwork as int), CAST(commsch as int)
+FROM dbo.[india_round]
+
+
+INSERT INTO dbo.food_security(
+childid,Roundid,credit,foodsec)
+SELECT CAST(childid as nvarchar(15)),CAST(Round as tinyint),CAST(credit as bit),
+CAST(foodsec as tinyint)
+FROM dbo.ethiopia_round
+
+INSERT INTO dbo.food_security(
+childid,Roundid,credit,foodsec)
+SELECT CAST(childid as nvarchar(15)),CAST(Round as tinyint),CAST(credit as bit),
+CAST(foodsec as tinyint)
+FROM dbo.[india_round]
+
+
+INSERT INTO dbo.property_ownership(
+childid,Roundid,ownlandhse,ownhouse)
+SELECT CAST(childid as nvarchar(15)),CAST(Round as tinyint),CAST(ownlandhse as bit),
+CAST(ownhouse as bit)
+FROM dbo.ethiopia_round
+
+INSERT INTO dbo.property_ownership(
+childid,Roundid,ownlandhse,ownhouse)
+SELECT CAST(childid as nvarchar(15)),CAST(Round as tinyint),CAST(ownlandhse as bit),
+CAST(ownhouse as bit)
+FROM dbo.[india_round]
+
+
+INSERT INTO dbo.wealth_sub_indices(
+childid,Roundid,wi_new,hq_new,sv_new,cd_new,elecq_new,
+toiletq_new,drwaterq_new,cookingq_new)
+SELECT CAST(childid as nvarchar(15)),CAST(Round as tinyint),CAST(wi_new as decimal(25, 20)),
+CAST(hq_new as decimal(25, 20)),CAST(sv_new as decimal(5, 3)),
+CAST(cd_new as decimal(4, 2)),CAST(elecq_new as bit),
+CAST(toiletq_new as bit),CAST(drwaterq_new as bit),
+CAST(cookingq_new as bit)
+FROM dbo.ethiopia_round
+
+INSERT INTO dbo.wealth_sub_indices(
+childid,Roundid,wi_new,hq_new,sv_new,cd_new,elecq_new,
+toiletq_new,drwaterq_new,cookingq_new)
+SELECT CAST(childid as nvarchar(15)),CAST(Round as tinyint), CAST(wi as decimal(25, 20)),
+CAST(hq as decimal(25, 20)),CAST(sv as decimal(5, 3)),
+CAST(cd as decimal(4, 2)),CAST(elecq as bit),
+CAST(toiletq as bit),CAST(drwaterq as bit),
+CAST(cookingq as bit)
+FROM dbo.[india_round]
+
+-------------------------------------------------------------------------------------------------
+--SUMMARIZED REPORT
+---------------------------------------------------------------------------------------------------
+--1
+-- to get the category of school type these children attend ?
+select count(*) as 'total number of children',
+case a.typesite
+when 1 then 'urban'
+when 2 then 'rural'
+else 'unknown' end as 'residence',
+case a.region
+when 1 then 'Tigray'
+when 2 then 'Afar'
+when 3 then 'Amhara'
+when 4 then 'Oromiya'
+when 5 then 'Somali'
+when 6 then 'Benshangul Gumz'
+when 7 then 'SNNP'
+when 8 then 'Gambela'
+when 13 then 'Harari'
+when 14 then 'Addis Ababa City Administration'
+when 15 then 'Dire Dawa City Administration'
+when 24 then 'Others'
+when 23 then 'Telangana'
+when 77 then 'Not known'
+when 22 then 'Rayalaseema'
+when 21 then 'Coastal Andhra'
+when 32 then 'Sierra'
+when 33 then 'Selva'
+when 88 then 'N/A'
+when 31 then 'Costa'
+when 51 then 'Northern Uplands'
+when 52 then 'Red River Delta'
+when 53 then 'Phu Yen'
+when 54 then 'Da Nang'
+when 55 then  'Highlands'
+when 56 then 'South Eastern'
+when 57 then 'Mekong River Delta'
+when 58 then 'Other'
+else null
+end as 'Region',
+case b.entype
+when 1 then 'child attends private school'
+when 2 then 'childs attends public school'
+when 3 then 'childs attends community school'
+when 4 then 'child attends Government funded school' end as 'school attended'
+from dbo.identification a join dbo.education b
+on a.childid = b.childid
+group by a.typesite, a.region, b.entype
+
+--2
+--select * from dbo.birth how many of these children mother's received tetanus and was delivered by a profesional
+health care giver in selected districts--
+select count(*) as 'total number of children',
+case a.typesite
+when 1 then 'urban'
+when 2 then 'rural'
+else 'unknown' end as 'residence',
+case a.region
+when 1 then 'Tigray'
+when 2 then 'Afar'
+when 3 then 'Amhara'
+when 21 then 'Coastal Andhra'
+when 32 then 'Sierra'
+when 33 then 'Selva'
+when 88 then 'N/A'
+when 31 then 'Costa'
+when 51 then 'Northern Uplands'
+when 52 then 'Red River Delta'
+when 53 then 'Phu Yen'
+when 54 then 'Da Nang' end as 'Region',
+case b.delivery
+when 0 then 'No'
+when 1 then 'yes' end as 'was the mother attended to by a akilled worker',
+case b.tetanus
+when 0 then 'No'
+when 1 then 'yes' end as 'mother received at least 2 injections for tetanus'
+from dbo.identification a join dbo.birth b
+on a.childid = b.childid
+where b.Roundid = 1
+group by a.typesite, a.region, b.delivery, b.tetanus
+
+--3
+-- trying  to understand the child literate level for a selected region for children in round ---
+select count(*) as 'total number of children',
+case a.typesite
+when 1 then 'urban'
+when 2 then 'rural'
+else 'unknown' end as 'residence',
+case a.region
+when 13 then 'Harari'
+when 14 then 'Addis Ababa City Administration'
+when 15 then 'Dire Dawa City Administration'
+when 23 then 'Telangana'
+when 77 then 'Not known'
+when 22 then 'Rayalaseema'
+when 21 then 'Coastal Andhra'
+when 32 then 'Sierra'
+when 33 then 'Selva' end as 'region',
+case b.hghgrade
+when 0 then 'None'
+when 1 then 'grade 1'
+when 2 then 'grade 2'
+when 3 then 'grade 3'
+when 4 then 'grade 4'
+when 5 then 'grade 5' 
+from dbo.identification a join dbo.read_write b
+on a.childid = b.childid
+where b.Roundid = 3
+group by a.region, a.typesite, b.literate
+
+--4
+--- the distribution of sanitation in india for both rural and urban region ----
+select count(*) as 'total count of residents',
+case toiletq
+when 0.0 then 'no access to sanitation'
+when 1.0 then 'access to sanitation'
+else 'unknown'
+end as 'Sanitation for Urban residence'
+from dbo.india_round 
+where typesite = 1
+group by toiletq
+
+select count(*) as 'total count of residents',
+case toiletq
+when 0.0 then 'no access to sanitation'
+when 1.0 then 'access to sanitation'
+else 'unknown'
+end as 'Sanitation for Rural residence'
+from dbo.india_round 
+where typesite = 2 
+group by toiletq
+
+--5
+--- comparing the child underweight for india and ethiopia ---
+
+select count(*) as 'total count of residents',
+case underweight
+when 0.0 then 'not underweight'
+when 1.0 then 'moderately underweight'
+when 2.0 then 'severely underweight'
+else 'unknown'
+end as 'child underweight for residence in Peru'
+from dbo.ethiopia_round 
+group by underweight
+
+select count(*) as 'total count of residents',
+case underweight
+when 0.0 then 'not underweight'
+when 1.0 then 'moderately underweight'
+when 2.0 then 'severely underweight'
+else 'unknown'
+end as 'child underweight for residence in india'
+from dbo.india_round 
+group by underweight
+
+--EXTRA FEATURES
+--1. STORED PROCEDURE
+create procedure childvitals
+@region float
+as
+select round(avg(chheight),2) as 'average child height',
+round(avg(chweight),2) as 'average child weight',
+round(avg(bmi),2) as 'average child body mass index',
+case chsex
+when 1 then 'male' 
+when 2 then 'female' else 'not recorded' end as 'gender'
+from dbo.india_round
+where region = @region
+group by chsex
+having round(avg(chheight),2) is not null
+
+--Executing the stored procedure (example)
+execute childvitals 22
+
+--2 VIEWS
+---creating a view for child lietracy for child monitored in round 3---
+CREATE VIEW CHILD_LITERATE AS (
+select count(*) as 'Nos of children',
+case a.typesite
+when 1 then 'urban'
+when 2 then 'rural'
+else 'not known' end as 'type of residence',
+case a.region
+when 1 then 'Tigray'
+when 2 then 'Afar'
+when 3 then 'Amhara'
+when 4 then 'Oromiya'
+when 5 then 'Somali'
+when 6 then 'Benshangul Gumz'
+when 7 then 'SNNP'
+when 8 then 'Gambela'
+when 13 then 'Harari'
+when 14 then 'Addis Ababa City Administration'
+when 15 then 'Dire Dawa City Administration'
+when 24 then 'Others'
+when 23 then 'Telangana'
+else 'no region' end as 'Location',
+case b.levlread
+when 1 then 'child cannot read anything'
+when 2 then 'child can read letters'
+when 3 then 'child can read words'
+else 'child can read sentences' end as 'child reading abilities',
+case b.levlwrit
+when 1 then 'child cannot write'
+when 2 then 'child can write with difficulty and error'
+when 3 then 'child can write without difficulty and error' end as 'child writing abilities'
+from dbo.identification a join dbo.read_write b 
+on a.childid = b.childid
+where a.roundid =3
+group by a.typesite, a.region, b.levlwrit, b.levlread)
+
+
+
+--------------------------------------------------------------------------------------------------
+----TASK 2
+--------------------------------------------------------------------------------------------------
+
+create view dbo.inequalities as (
+select uniqueid,
+case province
+when 1 then 'Ben Tire'
+when 2 then 'Da Nang'
+when 3 then 'Hung Yen'
+when 4 then 'Lao Cai'
+else 'Phu Yen' end as 'Province',
+case gender
+when 1 then 'male'
+else 'female' end as 'gender',
+case stdliv
+when 1 then 'home with my parents'
+when 2 then 'with other family and friends'
+when 3 then 'in a school hostel'
+when 4 then 'in a private hostel'
+else 'others' end as 'residence during school term',
+case stdlnghm
+when 0 then 'never'
+when 1 then 'sometimes'
+else 'always' end as 'do you speak vietnamese at home',
+case stageeng
+when 1 then 'kindergaten'
+when 2 then 'Grade 1-5'
+when 3 then 'Grade 6-9'
+when 4 then 'Grade 5-10'
+else 'i have never studied english' end as 'when did you start learning English',
+case stplstdy
+when 0 then 'No'
+else 'yes' end as 'do you have your own place to study at home',
+case strptcl10
+when 0 then 'never'
+when 1 then 'yes, once'
+else 'yes, twice or more' end as 'how often do you repeat grade 10',
+case strptcl6
+when 0 then 'never'
+when 1 then 'yes, once'
+else 'yes, twice or more' end as 'how often do you repeat grade 6'
+from dbo.vietnam_wave_1)
+
+
+ -- THIS VIEW CREATED SUMMARIZED REPORT FOR 1 TO 4
+--- 1
+---the ability of the children of each province in class---
+select uniqueid,
+case province
+when 1 then 'Ben Tire'
+when 2 then 'Da Nang'
+when 3 then 'Hung Yen'
+when 4 then 'Lao Cai'
+else 'Phu Yen' end as 'Province',
+case grpablty
+when 1 then 'low ability'
+when 2 then 'medium ability'
+else 'high ability' end as 'class ability'
+from dbo.vietnam_wave_1
+order by province
+
+---2
+---the proportion of gender that goes to school in each province---
+select uniqueid,
+case province
+when 1 then 'Ben Tire'
+when 2 then 'Da Nang'
+when 3 then 'Hung Yen'
+when 4 then 'Lao Cai'
+else 'Phu Yen' end as 'Province',
+case gender
+when 1 then 'male'
+else 'female' end as 'gender'
+from dbo.vietnam_wave_1
+order by province
+
+---3
+---This explains the living arrangement of each child in each province during school term---
+select uniqueid,
+case province
+when 1 then 'Ben Tire'
+when 2 then 'Da Nang'
+when 3 then 'Hung Yen'
+when 4 then 'Lao Cai'
+else 'Phu Yen' end as 'Province',
+case stdliv
+when 1 then 'home with parents'
+when 2 then 'with other family and friends'
+when 3 then 'in a school hostel'
+when 4 then 'in a private hostel'
+else 'others' end as 'residence during school term'
+from dbo.vietnam_wave_1
+order by [residence during school term]
+
+---4
+---the language spoken by the children when they at home with their parents---
+select uniqueid,
+case province
+when 1 then 'Ben Tire'
+when 2 then 'Da Nang'
+when 3 then 'Hung Yen'
+when 4 then 'Lao Cai'
+else 'Phu Yen' end as 'Province',
+case stdlnghm
+when 0 then 'never'
+when 1 then 'sometimes'
+else 'always' end as 'do you speak vietnamese at home'
+from dbo.vietnam_wave_1
+
+
+
+-----------------------------------------------------------------------------------------------
+----TASK 3
+------------------------------------------------------------------------------------------------
+---Making the Crimes Data Table----
+select * into dbo.all_crime
+from 
+dbo.Crime012017 union all select * from dbo.Crime022017
+union all select * from dbo.Crime032017
+union all select * from dbo.Crime042017
+union all select * from dbo.Crime052017
+union all select * from dbo.Crime062017
+union all select * from dbo.Crime072017
+union all select * from dbo.Crime082017
+union all select * from dbo.Crime092017
+union all select * from dbo.Crime102017
+union all select * from dbo.Crime112017
+union all select * from dbo.Crime122017
+union all select * from dbo.Crime012018
+union all select * from dbo.Crime022018
+union all select * from dbo.Crime032018
+union all select * from dbo.Crime042018
+union all select * from dbo.Crime052018
+union all select * from dbo.Crime062018
+union all select * from dbo.Crime072018
+union all select * from dbo.Crime082018
+union all select * from dbo.Crime092018
+union all select * from dbo.Crime102018
+union all select * from dbo.Crime112018
+union all select * from dbo.Crime122018
+
+---creating views
+create view population_uk_all
+as (
+select * from dbo.population_uk_2017 union all select * from dbo.population_uk_2018)
+
+--- visualizing anti-social behavior in Salford area
+select * from dbo.all_crime
+where [Crime type] = 'Anti-social behaviour'
+and [LSOA name] like 'Sal%'
+
+
+---visualizing vehicle crimes committed in Greater manchester area
+select * from dbo.all_crime
+where [Crime type] = 'Vehicle crime'
+and [LSOA name] like 'Man%'
+
+select [Month], [Crime type], [LSOA name] , sum([All_Ages]) as 'Total Population', 
+count(*) as 'Nos of times crime committed'
+from dbo.all_crime
+join---sumarized report using crimes data and census data
+/*count of crimes types committed in Rochadale*/
+ dbo.population_uk_all on [LSOA name] = [Output_Area]
+where [LSOA name] like 'Roch%' 
+group by [Month], [Crime type], [LSOA name]
+order by [LSOA name] ASC, [Month] asc
+
+
+
+/*summarized LSOA crime wise report with local population data
+for crimes committed in Greater manchester area, grouped by the crime type for
+each month of 2017-2018. this report shows the total population that committed
+a crime type and how many times the crime was committed for that month*/
+
+select a.[Month], a.[Crime type], a.[LSOA name] , sum(b.[Column 3]) as 'Total Population', 
+count([Column 3]) as 'Nos of times crime committed'
+from dbo.all_crime a
+join dbo.population_uk_all b on a.[LSOA name] = b.[Output_Area]
+where [LSOA name] like 'Old%' 
+group by a.[Month],a.[Crime type], a.[LSOA name]
+order by [LSOA name] ASC, [Month] asc
+
+select [Month], [Crime type], [LSOA name] , sum([Column 3]) as 'Total Population', 
+count(*) as 'Nos of times crime committed'
+from dbo.all_crime
+join dbo.population_uk_all on [LSOA name]
+where [LSOA name] like 'Roch%' 
+group by [Month],[Crime type], [LSOA name]
+order by [LSOA name] ASC, [Month] asc
+
+
+
